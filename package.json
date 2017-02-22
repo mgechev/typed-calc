@@ -1,0 +1,22 @@
+{
+  "name": "typed-calc",
+  "version": "1.0.0",
+  "description": "Simply typed lambda calculus",
+  "main": "index.js",
+  "scripts": {
+    "gen": "pegjs simply-typed.peg"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mgechev/typed-calc.git"
+  },
+  "author": "Minko Gechev <mgechev@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mgechev/typed-calc/issues"
+  },
+  "homepage": "https://github.com/mgechev/typed-calc#readme",
+  "devDependencies": {
+    "pegjs": "^0.10.0"
+  }
+}
