@@ -1,128 +1,178 @@
-const ASTNodes = {
-  Abstraction: 'abstraction',
-  Condition: 'conditional_expression',
-  Identifier: 'identifier',
-  Literal: 'literal',
-  Arithmetic: 'arithmetic',
-  IsZero: 'is_zero',
-  Application: 'application'
-};
+const { SymbolTableImpl, Scope } = require('./symbol-table');
+const { ASTNodes } = require('./ast');
+
+const SymbolTable = new SymbolTableImpl();
 
 const Types = {
   Integer: 'Int',
   Boolean: 'Bool'
 };
 
-class SymbolTableImpl {
-  constructor() {
-    this.table = [];
-  }
-  push(scope) {
-    this.table.push(scope);
-  }
-  lookup(x) {
-    for (let i = this.table.length - 1; i >= 0; i -= 1) {
-      const type = this.table[i].get(x);
-      if (type) {
-        return type;
-      }
-    }
-    return undefined;
-  }
-}
+const Check = (ast, diagnostics) => {
+  diagnostics = diagnostics || [];
 
-const SymbolTable = new SymbolTableImpl();
-
-class Scope {
-  constructor() {
-    this.map = {};
-  }
-  add(x, type) {
-    this.map[x] = type;
-  }
-  get(x) {
-    return this.map[x];
-  }
-}
-
-const Check = ast => {
+  // By definition empty AST is correct
   if (!ast) {
-    return true;
+    return {
+      diagnostics
+    };
   }
+
+  // Literals:
+  // - 0 is of type Integer
+  // - false and true are of type Boolean
+  // Everything else is incorrect.
   if (ast.type === ASTNodes.Literal) {
     if (ast.value === 0) {
-      return Types.Integer;
+      return {
+        diagnostics,
+        type: Types.Integer
+      };
     } else if (ast.value === false || ast.value === true) {
-      return Types.Boolean;
+      return {
+        diagnostics,
+        type: Types.Boolean
+      };
     } else {
-      console.log('Unknown type literal!');
-      return false;
+      diagnostics.push('Unknown type literal!');
+      return {
+        diagnostics
+      };
     }
+
+  // We get the type of identifier from the symbol table
   } else if (ast.type === ASTNodes.Identifier) {
-    return SymbolTable.lookup(ast.name);
+    return {
+      diagnostics,
+      type: SymbolTable.lookup(ast.name)
+    };
+
+  // if-then-else block is correct if:
+  // - The condition is of type Boolean.
+  // - Then and else are of the same type.
   } else if (ast.type === ASTNodes.Condition) {
     if (!ast.then || !ast.el || !ast.condition) {
-      console.log('No condition for if statement');
-      return false;
+      diagnostics.push('No condition for if statement');
+      return {
+        diagnostics
+      };
     }
-    const condition = Check(ast.condition);
-    if (condition !== Types.Boolean) {
-      console.log('Incorrect type of condition of condition!');
-      return false;
+    const c = Check(ast.condition);
+    diagnostics = diagnostics.concat(c.diagnostics);
+    const conditionType = c.type;
+    if (conditionType !== Types.Boolean) {
+      diagnostics.push('Incorrect type of condition of condition!');
+      return {
+        diagnostics
+      };
     }
     const thenBranch = Check(ast.then);
+    diagnostics = diagnostics.concat(thenBranch.diagnostics);
+    const thenBranchType = thenBranch.type;
     const elseBranch = Check(ast.el);
-    if (thenBranch === elseBranch) {
+    diagnostics = diagnostics.concat(elseBranch.diagnostics);
+    const elseBranchType = elseBranch.type;
+    if (thenBranchType === elseBranchType) {
       return thenBranch;
     } else {
-      console.log('Incorrect type of then/else branches!');
-      return false;
+      diagnostics.push('Incorrect type of then/else branches!');
+      return {
+        diagnostics
+      };
     }
+
+  // Abstraction registers its argument in the SymbolTable
+  // and returns a pair:
+  // - The type of its argument.
+  // - Type of its body, which may depend on the type
+  // of the argument registered in the SymbolTable.
   } else if (ast.type === ASTNodes.Abstraction) {
     const scope = new Scope();
     scope.add(ast.arg.id.name, ast.arg.type);
     SymbolTable.push(scope);
     if (!ast.body) {
-      console.log('No body of a function');
-      return false;
+      diagnostics.push('No body of a function');
+      return {
+        diagnostics
+      };
     }
-    const bodyType = Check(ast.body);
+    const body = Check(ast.body);
+    const bodyType = body.type;
+    diagnostics = diagnostics.concat(body.diagnostics);
     if (!bodyType) {
-      console.log('Incorrect type of the body');
-      return false;
+      diagnostics.push('Incorrect type of the body');
+      return {
+        diagnostics
+      };
     }
-    return [ast.arg.type, bodyType];
+    return {
+      diagnostics,
+      type: [ast.arg.type, bodyType]
+    }
+
+  // The type of IsZero is Boolean but in case
+  // its argument is not Integer the program is incorrect.
   } else if (ast.type === ASTNodes.IsZero) {
-    const bodyType = Check(ast.expression);
+    const body = Check(ast.expression);
+    diagnostics = diagnostics.concat(body.diagnostics);
+    const bodyType = body.type;
     if (bodyType !== Types.Integer) {
-      console.log('Incorrect type of IsZero');
-      return false;
+      diagnostics.push('Incorrect type of IsZero');
+      return {
+        diagnostics
+      };
     }
-    return Types.Boolean;
+    return {
+      diagnostics,
+      type: Types.Boolean
+    }
+
+  // The type of the arithmetic operations are Integer
+  // but in case the type of the body is not the entire
+  // program is incorrect.
   } else if (ast.type === ASTNodes.Arithmetic) {
-    const bodyType = Check(ast.expression);
+    const body = Check(ast.expression);
+    diagnostics = diagnostics.concat(body.diagnostics);
+    const bodyType = body.type;
     if (bodyType !== Types.Integer) {
-      console.log(`Incorrect type of ${ast.operation}`);
-      return false;
+      diagnostics.push(`Incorrect type of ${ast.operation}`);
+      return {
+        diagnostics
+      };
     }
-    return Types.Integer;
+    return {
+      diagnostics,
+      type: Types.Integer
+    };
+
+  // The type of:
+  // e1: T1, e2: T2, e1 e2: T1
   } else if (ast.type === ASTNodes.Application) {
-    const leftType = Check(ast.left);
-    const rightType = Check(ast.right);
+    const l = Check(ast.left);
+    const leftType = l.type;
+    diagnostics = diagnostics.concat(l.diagnostics);
+    const r = Check(ast.right);
+    const rightType = r.type;
+    diagnostics = diagnostics.concat(r.diagnostics);
     if (leftType.length) {
       if (!ast.right || leftType[0] === rightType) {
-        return leftType[1];
+        return {
+          diagnostics,
+          type: leftType[1]
+        };
       }
       if (leftType !== rightType) {
-        console.log('Incorrect type of application!');
-        return false;
+        diagnostics.push('Incorrect type of application!');
+        return {
+          diagnostics
+        };
       }
     } else {
-      return false;
+      return { diagnostics };
     }
   }
-  return true;
+  return { diagnostics };
 };
 
-module.exports.Check = ast => !!Check(ast);
+module.exports.Check = ast => Check(ast);
 
