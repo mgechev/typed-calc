@@ -1,6 +1,6 @@
 # Simply Typed Lambda Calculus
 
-A type checker and interpreter of simply typed lambda calculus written in JavaScript.
+A type checker and interpreter for simply typed lambda calculus written in JavaScript.
 
 # Example
 
