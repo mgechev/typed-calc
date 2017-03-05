@@ -1,0 +1,1 @@
+(λ a: Bool → succ succ 0) iszero 0

@@ -149,10 +149,10 @@ const Check = (ast, diagnostics) => {
   // e1: T1, e2: T2, e1 e2: T1
   } else if (ast.type === ASTNodes.Application) {
     const l = Check(ast.left);
-    const leftType = l.type;
+    const leftType = l.type || [];
     diagnostics = diagnostics.concat(l.diagnostics);
     const r = Check(ast.right);
-    const rightType = r.type;
+    const rightType = r.type || [];
     diagnostics = diagnostics.concat(r.diagnostics);
     if (leftType.length) {
       if (!ast.right || leftType[0] === rightType) {

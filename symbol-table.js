@@ -27,4 +27,3 @@ module.exports.Scope = class Scope {
     return this.map[x];
   }
 }
-
