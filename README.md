@@ -28,7 +28,7 @@ $ node index.js demo/correct1.lambda
 $ node index.js transpile demo/correct1.lambda
 
 (function(a) {
-    return a;
+  return a;
 })(
   (function(a) {
     return a === 0;
