@@ -1,0 +1,8 @@
+(
+  λ x: Int →
+    (λ y: Int → x) 0
+)
+succ (
+  λ f: Int →
+    (λ g: Int → g) 0
+) 0
