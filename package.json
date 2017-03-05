@@ -18,5 +18,8 @@
   "homepage": "https://github.com/mgechev/typed-calc#readme",
   "devDependencies": {
     "pegjs": "^0.10.0"
+  },
+  "dependencies": {
+    "prettier": "^0.21.0"
   }
 }
