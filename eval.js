@@ -46,7 +46,7 @@ const Eval = ast => {
   // The arithmetic operations manipulate the value
   // of their corresponding expressions:
   // - `succ` adds 1.
-  // - `pred` substracts 1.
+  // - `pred` subtracts 1.
   } else if (ast.type === ASTNodes.Arithmetic) {
     const op = ast.operator;
     const val = Eval(ast.expression);
