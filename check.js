@@ -8,6 +8,26 @@ const Types = {
   Boolean: 'Bool'
 };
 
+const typeEq = (a, b) => {
+  if (a instanceof Array && b instanceof Array) {
+    if (a.length !== b.length) {
+      return false;
+    } else {
+      for (let i = 0; i < a.length; i += 1) {
+        if (!typeEq(a[i], b[i])) {
+          return false;
+        }
+      }
+      return true;
+    }
+  } else {
+    if (typeof a === 'string' && typeof b === 'string') {
+      return a === b;
+    }
+  }
+  return false;
+};
+
 const Check = (ast, diagnostics) => {
   diagnostics = diagnostics || [];
 
@@ -60,7 +80,7 @@ const Check = (ast, diagnostics) => {
     const c = Check(ast.condition);
     diagnostics = diagnostics.concat(c.diagnostics);
     const conditionType = c.type;
-    if (conditionType !== Types.Boolean) {
+    if (!typeEq(conditionType, Types.Boolean)) {
       diagnostics.push('Incorrect type of condition of condition!');
       return {
         diagnostics
@@ -72,7 +92,7 @@ const Check = (ast, diagnostics) => {
     const elseBranch = Check(ast.el);
     diagnostics = diagnostics.concat(elseBranch.diagnostics);
     const elseBranchType = elseBranch.type;
-    if (thenBranchType === elseBranchType) {
+    if (typeEq(thenBranchType, elseBranchType)) {
       return thenBranch;
     } else {
       diagnostics.push('Incorrect type of then/else branches!');
@@ -116,7 +136,7 @@ const Check = (ast, diagnostics) => {
     const body = Check(ast.expression);
     diagnostics = diagnostics.concat(body.diagnostics);
     const bodyType = body.type;
-    if (bodyType !== Types.Integer) {
+    if (!typeEq(bodyType, Types.Integer)) {
       diagnostics.push('Incorrect type of IsZero');
       return {
         diagnostics
@@ -134,7 +154,7 @@ const Check = (ast, diagnostics) => {
     const body = Check(ast.expression);
     diagnostics = diagnostics.concat(body.diagnostics);
     const bodyType = body.type;
-    if (bodyType !== Types.Integer) {
+    if (!typeEq(bodyType, Types.Integer)) {
       diagnostics.push(`Incorrect type of ${ast.operation}`);
       return {
         diagnostics
@@ -161,7 +181,7 @@ const Check = (ast, diagnostics) => {
           type: leftType[1]
         };
       }
-      if (leftType !== rightType) {
+      if (typeEq(leftType, rightType)) {
         diagnostics.push('Incorrect type of application!');
         return {
           diagnostics

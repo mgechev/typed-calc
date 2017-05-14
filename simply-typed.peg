@@ -1,5 +1,5 @@
 Application = l:ExprAbs r:Application* {
-  if (!r || !r.length) { 
+  if (!r || !r.length) {
     return l;
   } else {
     r = r.pop();

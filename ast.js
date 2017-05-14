@@ -8,5 +8,10 @@ const ASTNodes = {
   Application: 'application'
 };
 
-module.exports.ASTNodes = ASTNodes;
+const Types = {
+  Boolean: 'bool',
+  Integer: 'int'
+}
 
+module.exports.ASTNodes = ASTNodes;
+module.exports.Types = Types;

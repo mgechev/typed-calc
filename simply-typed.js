@@ -142,7 +142,7 @@ function peg$parse(input, options) {
       peg$startRuleFunction  = peg$parseApplication,
 
       peg$c0 = function(l, r) {
-        if (!r || !r.length) { 
+        if (!r || !r.length) {
           return l;
         } else {
           r = r.pop();

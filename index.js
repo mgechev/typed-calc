@@ -1,7 +1,9 @@
 const { parse } = require('./simply-typed');
 const { Check } = require('./check');
 const { Eval } = require('./eval');
-const { Transpile } = require('./transpiler');
+const { green } = require('chalk');
+const { CompileJS } = require('./compile');
+const { CompileWat } = require('./compile-wat');
 const { readFileSync, existsSync } = require('fs');
 
 const getAst = program => {
@@ -16,21 +18,39 @@ const getAst = program => {
   return ast;
 };
 
-const evaluate = program => Eval(getAst(program));
-const transpile = program => Transpile(getAst(program));
-
 const fileName = process.argv.pop();
-const mode = process.argv.pop();
+let mode = process.argv.pop();
+let target = process.argv.pop();
+
+if (mode === 'wat' || target === 'compile') {
+  [mode, target] = [target, mode];
+}
 
 if (!existsSync(fileName)) {
   console.error(`"${fileName}" does not exist.`)
   process.exit(1);
 }
 
-const program = readFileSync(fileName, { encoding: 'utf-8' });
+const shouldCompile = mode === 'compile';
 
-if (mode === 'transpile') {
-  console.log(transpile(program));
+const userMessage = (shouldCompile ? 'Compiling' : 'Evaluating') +
+  ` "${fileName}"` +
+  (shouldCompile ? ` to ` + (target === 'wat' ? 'WebAssembly' : 'JavaScript') : '') + '.';
+
+console.log(green(userMessage));
+console.log();
+
+const program = readFileSync(fileName, { encoding: 'utf-8' });
+const ast = getAst(program);
+
+if (mode === 'compile') {
+  let result = '';
+  if (target === 'wat') {
+    result = CompileWat(ast);
+  } else {
+    result = CompileJS(ast);
+  }
+  console.log(result);
 } else {
-  console.log(evaluate(program));
+  console.log(Eval(ast));
 }

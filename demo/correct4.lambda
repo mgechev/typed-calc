@@ -1,0 +1,8 @@
+(λ a: Int → a)
+  (if
+    (λ a: Int → iszero a) pred 0
+  then
+    (λ a: Int → succ a)
+  else
+    (λ a: Int → pred a))
+  0
