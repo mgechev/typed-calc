@@ -9,7 +9,7 @@ Application = l:ExprAbs r:Application* {
 
 ExprAbs = Expr / Abstraction;
 
-Abstraction = _ '('? _ 'λ' _ id:Identifier ':' t:Type '→' f:Application _ ')'? _ {
+Abstraction = _ '('* _ 'λ' _ id:Identifier ':' t:Type '→' f:Application _ ')'? _ {
   return { type: 'abstraction', arg: { type: t, id: id }, body: f };
 }
 
