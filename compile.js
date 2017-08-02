@@ -49,7 +49,7 @@ const CompileJS = ast => {
       case 'succ':
         return `${val} + 1\n`;
       case 'pred':
-        return `${val} - 1\n`;
+        return `(${val} - 1 >= 0) ? ${val} - 1 : 0\n`;
     }
 
   // The application compiles to:

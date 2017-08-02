@@ -54,7 +54,7 @@ const Eval = ast => {
       case 'succ':
         return val + 1;
       case 'pred':
-        return val - 1;
+        return (val - 1 >= 0) ? val - 1 : val;
     }
 
   // The application evaluates to:
