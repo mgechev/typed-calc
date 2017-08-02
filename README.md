@@ -22,10 +22,10 @@ $ node index.js demo/correct1.lambda
 0
 ```
 
-## Transpiler
+## Compiler
 
 ```
-$ node index.js transpile demo/correct1.lambda
+$ node index.js compile demo/correct1.lambda
 
 (function(a) {
   return a;
