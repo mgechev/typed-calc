@@ -212,10 +212,10 @@ function peg$parse(input, options) {
       peg$c41 = function() {
         return 'succ';
       },
-      peg$c42 = "Int",
-      peg$c43 = peg$literalExpectation("Int", false),
+      peg$c42 = "Nat",
+      peg$c43 = peg$literalExpectation("Nat", false),
       peg$c44 = function() {
-        return 'Int';
+        return 'Nat';
       },
       peg$c45 = "Bool",
       peg$c46 = peg$literalExpectation("Bool", false),
@@ -672,7 +672,7 @@ function peg$parse(input, options) {
   function peg$parseType() {
     var s0;
 
-    s0 = peg$parseInt();
+    s0 = peg$parseNat();
     if (s0 === peg$FAILED) {
       s0 = peg$parseBool();
     }
@@ -982,7 +982,7 @@ function peg$parse(input, options) {
           if (s0 === peg$FAILED) {
             s0 = peg$parseSucc();
             if (s0 === peg$FAILED) {
-              s0 = peg$parseInt();
+              s0 = peg$parseNat();
               if (s0 === peg$FAILED) {
                 s0 = peg$parseBool();
                 if (s0 === peg$FAILED) {
@@ -1173,7 +1173,7 @@ function peg$parse(input, options) {
     return s0;
   }
 
-  function peg$parseInt() {
+  function peg$parseNat() {
     var s0, s1, s2, s3;
 
     s0 = peg$currPos;

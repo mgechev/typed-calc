@@ -1,1 +1,1 @@
-(λ a: Int → a) if (λ a: Int → iszero a) pred 0 then succ 0 else 0
+(λ a: Nat → a) if (λ a: Nat → iszero a) pred 0 then succ 0 else 0

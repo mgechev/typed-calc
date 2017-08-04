@@ -1,1 +1,1 @@
-(λ a: Int → succ succ a) 0
+(λ a: Nat → succ succ a) 0

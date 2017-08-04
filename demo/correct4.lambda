@@ -1,8 +1,8 @@
-(λ a: Int → a)
+(λ a: Nat → a)
   (if
-    (λ a: Int → iszero a) pred 0
+    (λ a: Nat → iszero a) pred 0
   then
-    (λ a: Int → succ a)
+    (λ a: Nat → succ a)
   else
-    (λ a: Int → pred a))
+    (λ a: Nat → pred a))
   0

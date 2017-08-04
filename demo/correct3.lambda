@@ -1,8 +1,8 @@
 (
-  λ x: Int →
-    (λ y: Int → x) 0
+  λ x: Nat →
+    (λ y: Nat → x) 0
 )
 succ (
-  λ f: Int →
-    (λ g: Int → g) 0
+  λ f: Nat →
+    (λ g: Nat → g) 0
 ) 0

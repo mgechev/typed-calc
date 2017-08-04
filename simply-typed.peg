@@ -29,7 +29,7 @@ IfThen = If expr:Application Then then:Application Else el:Application {
   return { type: 'conditional_expression', condition: expr, then: then, el: el };
 }
 
-Type =  Int / Bool
+Type =  Nat / Bool
 
 _  = [ \t\r\n]*
 
@@ -55,7 +55,7 @@ Zero = _ '0' _ {
   return { type: 'literal', value: 0 };
 }
 
-ReservedWord = If / Then / Else / Pred / Succ / Int / Bool / IsZero / False
+ReservedWord = If / Then / Else / Pred / Succ / Nat / Bool / IsZero / False
 
 If = _'if'_
 
@@ -71,8 +71,8 @@ Succ = _'succ'_ {
   return 'succ';
 }
 
-Int = _'Int'_ {
-  return 'Int';
+Nat = _'Nat'_ {
+  return 'Nat';
 }
 
 Bool = _'Bool'_ {

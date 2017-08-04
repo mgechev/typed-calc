@@ -1,1 +1,1 @@
-(λ a: Int → succ succ 0) iszero 0
+(λ a: Nat → succ succ 0) iszero 0

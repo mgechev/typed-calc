@@ -4,7 +4,7 @@ const { ASTNodes } = require('./ast');
 const SymbolTable = new SymbolTableImpl();
 
 const Types = {
-  Integer: 'Int',
+  Natural: 'Nat',
   Boolean: 'Bool'
 };
 
@@ -39,14 +39,14 @@ const Check = (ast, diagnostics) => {
   }
 
   // Literals:
-  // - 0 is of type Integer
+  // - 0 is of type Natural
   // - false and true are of type Boolean
   // Everything else is incorrect.
   if (ast.type === ASTNodes.Literal) {
     if (ast.value === 0) {
       return {
         diagnostics,
-        type: Types.Integer
+        type: Types.Natural
       };
     } else if (ast.value === false || ast.value === true) {
       return {
@@ -131,12 +131,12 @@ const Check = (ast, diagnostics) => {
     }
 
   // The type of IsZero is Boolean but in case
-  // its argument is not Integer the program is incorrect.
+  // its argument is not Natural the program is incorrect.
   } else if (ast.type === ASTNodes.IsZero) {
     const body = Check(ast.expression);
     diagnostics = diagnostics.concat(body.diagnostics);
     const bodyType = body.type;
-    if (!typeEq(bodyType, Types.Integer)) {
+    if (!typeEq(bodyType, Types.Natural)) {
       diagnostics.push('Incorrect type of IsZero');
       return {
         diagnostics
@@ -147,14 +147,14 @@ const Check = (ast, diagnostics) => {
       type: Types.Boolean
     }
 
-  // The type of the arithmetic operations are Integer
+  // The type of the arithmetic operations are Natural
   // but in case the type of the body is not the entire
   // program is incorrect.
   } else if (ast.type === ASTNodes.Arithmetic) {
     const body = Check(ast.expression);
     diagnostics = diagnostics.concat(body.diagnostics);
     const bodyType = body.type;
-    if (!typeEq(bodyType, Types.Integer)) {
+    if (!typeEq(bodyType, Types.Natural)) {
       diagnostics.push(`Incorrect type of ${ast.operation}`);
       return {
         diagnostics
@@ -162,7 +162,7 @@ const Check = (ast, diagnostics) => {
     }
     return {
       diagnostics,
-      type: Types.Integer
+      type: Types.Natural
     };
 
   // The type of:
