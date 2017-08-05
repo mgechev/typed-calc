@@ -1,0 +1,1 @@
+((((λ a: Nat → λ a: Nat → λ a: Nat → λ a: Nat → a) 0) 0) 0) 0
