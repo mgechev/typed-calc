@@ -29,7 +29,7 @@ const CompileJS = ast => {
   // The abstraction compiles to a function
   // from the target language.
 } else if (ast.type === ASTNodes.Abstraction) {
-  return `(function (${ast.arg.id.name}) {
+  return `(${ast.arg.id.name} => {
   return ${CompileJS(ast.body)}
 })`;
 
