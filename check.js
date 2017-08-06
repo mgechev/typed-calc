@@ -60,19 +60,19 @@ const Check = (ast, diagnostics) => {
       };
     }
 
-  // We get the type of identifier from the symbol table
+    // We get the type of identifier from the symbol table
   } else if (ast.type === ASTNodes.Identifier) {
     return {
       diagnostics,
       type: SymbolTable.lookup(ast.name)
     };
 
-  // if-then-else block is correct if:
-  // - The condition is of type Boolean.
-  // - Then and else are of the same type.
+    // if-then-else block is correct if:
+    // - The condition is of type Boolean.
+    // - Then and else are of the same type.
   } else if (ast.type === ASTNodes.Condition) {
     if (!ast.then || !ast.el || !ast.condition) {
-      diagnostics.push('No condition for if statement');
+      diagnostics.push('No condition for a conditional expression');
       return {
         diagnostics
       };
@@ -101,11 +101,11 @@ const Check = (ast, diagnostics) => {
       };
     }
 
-  // Abstraction registers its argument in the SymbolTable
-  // and returns a pair:
-  // - The type of its argument.
-  // - Type of its body, which may depend on the type
-  // of the argument registered in the SymbolTable.
+    // Abstraction registers its argument in the SymbolTable
+    // and returns a pair:
+    // - The type of its argument.
+    // - Type of its body, which may depend on the type
+    // of the argument registered in the SymbolTable.
   } else if (ast.type === ASTNodes.Abstraction) {
     const scope = new Scope();
     scope.add(ast.arg.id.name, ast.arg.type);
@@ -128,10 +128,10 @@ const Check = (ast, diagnostics) => {
     return {
       diagnostics,
       type: [ast.arg.type, bodyType]
-    }
+    };
 
-  // The type of IsZero is Boolean but in case
-  // its argument is not Natural the program is incorrect.
+    // The type of IsZero is Boolean but in case
+    // its argument is not Natural the program is incorrect.
   } else if (ast.type === ASTNodes.IsZero) {
     const body = Check(ast.expression);
     diagnostics = diagnostics.concat(body.diagnostics);
@@ -145,11 +145,11 @@ const Check = (ast, diagnostics) => {
     return {
       diagnostics,
       type: Types.Boolean
-    }
+    };
 
-  // The type of the arithmetic operations are Natural
-  // but in case the type of the body is not the entire
-  // program is incorrect.
+    // The type of the arithmetic operations are Natural
+    // but in case the type of the body is not the entire
+    // program is incorrect.
   } else if (ast.type === ASTNodes.Arithmetic) {
     const body = Check(ast.expression);
     diagnostics = diagnostics.concat(body.diagnostics);
@@ -165,8 +165,8 @@ const Check = (ast, diagnostics) => {
       type: Types.Natural
     };
 
-  // The type of:
-  // e1: T1, e2: T2, e1 e2: T1
+    // The type of:
+    // e1: T1, e2: T2, e1 e2: T1
   } else if (ast.type === ASTNodes.Application) {
     const l = Check(ast.left);
     const leftType = l.type || [];
@@ -194,4 +194,3 @@ const Check = (ast, diagnostics) => {
 };
 
 module.exports.Check = ast => Check(ast);
-
