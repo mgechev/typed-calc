@@ -1,7 +1,7 @@
 const { parse } = require('./simply-typed');
 const { Check } = require('./check');
 const { Eval } = require('./eval');
-const { green } = require('chalk');
+const { green, red } = require('chalk');
 const { CompileJS } = require('./compile');
 const { CompileWat } = require('./compile-wat');
 const { readFileSync, existsSync } = require('fs');
@@ -11,7 +11,7 @@ const getAst = program => {
 
   const diagnostics = Check(ast).diagnostics;
   if (diagnostics.length) {
-    console.error(diagnostics.join('\n'));
+    console.error(red(diagnostics.join('\n')));
     process.exit(1);
   }
 

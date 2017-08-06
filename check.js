@@ -54,7 +54,7 @@ const Check = (ast, diagnostics) => {
         type: Types.Boolean
       };
     } else {
-      diagnostics.push('Unknown type literal!');
+      diagnostics.push('Unknown type literal');
       return {
         diagnostics
       };
@@ -81,7 +81,7 @@ const Check = (ast, diagnostics) => {
     diagnostics = diagnostics.concat(c.diagnostics);
     const conditionType = c.type;
     if (!typeEq(conditionType, Types.Boolean)) {
-      diagnostics.push('Incorrect type of condition of condition!');
+      diagnostics.push('Incorrect type of condition of condition');
       return {
         diagnostics
       };
@@ -95,7 +95,7 @@ const Check = (ast, diagnostics) => {
     if (typeEq(thenBranchType, elseBranchType)) {
       return thenBranch;
     } else {
-      diagnostics.push('Incorrect type of then/else branches!');
+      diagnostics.push('Incorrect type of then/else branches');
       return {
         diagnostics
       };
@@ -180,9 +180,8 @@ const Check = (ast, diagnostics) => {
           diagnostics,
           type: leftType[1]
         };
-      }
-      if (typeEq(leftType, rightType)) {
-        diagnostics.push('Incorrect type of application!');
+      } else {
+        diagnostics.push('Incorrect type of application');
         return {
           diagnostics
         };
