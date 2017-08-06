@@ -3,7 +3,7 @@ const { Check } = require('./check');
 const { Eval } = require('./eval');
 const { green, red } = require('chalk');
 const { CompileJS } = require('./compile');
-const { CompileWat } = require('./compile-wat');
+// const { CompileWat } = require('./compile-wat');
 const { readFileSync, existsSync } = require('fs');
 
 const getAst = program => {
