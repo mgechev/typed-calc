@@ -9,8 +9,8 @@ const ASTNodes = {
 };
 
 const Types = {
-  Boolean: 'bool',
-  Natural: 'nat'
+  Boolean: 'Bool',
+  Natural: 'Nat'
 }
 
 module.exports.ASTNodes = ASTNodes;

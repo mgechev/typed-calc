@@ -1,12 +1,7 @@
 const { SymbolTableImpl, Scope } = require('./symbol-table');
-const { ASTNodes } = require('./ast');
+const { ASTNodes, Types } = require('./ast');
 
 const SymbolTable = new SymbolTableImpl();
-
-const Types = {
-  Natural: 'Nat',
-  Boolean: 'Bool'
-};
 
 const typeEq = (a, b) => {
   if (a instanceof Array && b instanceof Array) {
