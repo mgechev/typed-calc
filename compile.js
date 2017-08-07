@@ -5,6 +5,9 @@ const prettier = require("prettier");
 
 const SymbolTable = new SymbolTableImpl();
 
+// Doesn't support lazy evaluation
+// so examples like `demo/correct4.lambda` will
+// not be transpiled correctly.
 const CompileJS = ast => {
   // The empty program compiles to an empty program ''.
   if (!ast) {
